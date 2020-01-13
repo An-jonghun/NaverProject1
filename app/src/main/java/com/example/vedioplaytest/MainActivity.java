@@ -2,20 +2,17 @@ package com.example.vedioplaytest;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,11 +25,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnRestart;
     private Button btnGetVedioGallery;
     private Button btnGetVedioInternet;
+    private Button btnGetVedioConnect;
 
      VideoView videoView;    //비교할 영상
      TextureView myActionView;       // 내동작
 
     MediaController mediaController;
+    VideoSetPath videoSetPath;
 
     String videoPath;
     boolean videoReady = false; //  비디오영상이 준비됬는지 안됬는지 확인
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         videoView = findViewById(R.id.videoView);
@@ -54,33 +52,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnGetVedioGallery = findViewById(R.id.getVedioGallery);
         btnGetVedioInternet = findViewById(R.id.getVedioInternet);
+        btnGetVedioConnect = findViewById(R.id.getVedioConnect);
 
         btnStart.setOnClickListener(this);
         btnPause.setOnClickListener(this);
         btnRestart.setOnClickListener(this);
         btnGetVedioGallery.setOnClickListener(this);
         btnGetVedioInternet.setOnClickListener(this);
+        btnGetVedioConnect.setOnClickListener(this);
 
         mediaController = new MediaController(this);
-
-       /* VideoSetPath videoSetPath = new VideoSetPath(videoView, mediaController);
-        videoReady = videoSetPath.isVideoReady();
-        //테스트값*/
-
-        if (GET_VIEOTYPE != 0) {    //갤러리나 인터넷중에 선택했을경우
-            VideoSetPath videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE,videoPath);
-
-            Log.e("경로값",videoPath);
-
-            if (GET_VIEOTYPE == GET_VIEOTYPE) {     //갤러리에서 선택한 비디오영상 재생
-                videoReady = videoSetPath.isVideoReady();
-            } else if (GET_VIEOTYPE == SELECT_INTERNET) {
-                videoReady = videoSetPath.isVideoReady();
-
-            } else {        //아무것도 선택안했을경우
-                Toast.makeText(this, "갤러리나 인터넷에서 영상을 선택해주세요.", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     @Override
@@ -100,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         } else {
            if(v.getId()==R.id.btnStart || v.getId()==R.id.btnPause || v.getId()==R.id.btnRestart)
-            Toast.makeText(this, "재생에 문제가 있습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "재생에 준비가 되지 않았습니다.", Toast.LENGTH_SHORT).show();
         }
 
         switch (v.getId()) {
@@ -116,6 +97,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intentGetVideo);
                 //  @TODO: 인터넷에서 동영상 String path값 받기;
                 break;
+            case R.id.getVedioConnect:
+                videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE,videoPath);
+                videoReady = videoSetPath.isVideoReady();
         }
     }
 
@@ -123,18 +107,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Uri uri = data.getData();
-        videoPath = getRealPathFromURI(uri);
+        FindVideoPath mfindVideoPath = new FindVideoPath(uri);
+        videoPath = mfindVideoPath.getRealPathFromURI(getApplicationContext(),uri);     //경로받기
     }
 
-    private String getRealPathFromURI(Uri uri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor c = getContentResolver().query(uri, proj, null, null, null);
-        int index = c.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-        c.moveToFirst();
-        String path = c.getString(index);
-
-        return path;
-    }
 }
 

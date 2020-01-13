@@ -18,10 +18,11 @@ public class VideoSetPath {
     public VideoSetPath(VideoView videoView, MediaController mediaController) {
 
         VIDEO_Path = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4"; //추후변경
+         videoView.setVideoURI(Uri.parse(VIDEO_Path));
 
-        출처: https://tony-programming.tistory.com/entry/Android-VideoView-예제 [Tony Programming]
-
-        videoView.setVideoURI(Uri.parse(VIDEO_Path));
+    /*    VIDEO_Path = "/storage/emulated/0/Download/big_buck_bunny_720p_10mb.mp4";
+        videoView.setVideoPath(VIDEO_Path);*/
+    //내부경로 사용
 
         videoView.setMediaController(mediaController);
         videoReady = true;  //동영상재생 준비완료
