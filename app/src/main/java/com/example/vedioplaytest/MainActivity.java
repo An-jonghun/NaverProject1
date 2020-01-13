@@ -2,6 +2,9 @@ package com.example.vedioplaytest;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnGetVedioConnect;
 
      VideoView videoView;    //비교할 영상
-     TextureView myActionView;       // 내동작
+     /*TextureView myActionView;       // 내동작*/
 
     MediaController mediaController;
     VideoSetPath videoSetPath;
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         videoView = findViewById(R.id.videoView);
-        myActionView = findViewById(R.id.myAction);
+        /*myActionView = findViewById(R.id.myAction);*/
 
         btnStart = findViewById(R.id.btnStart);
         btnPause = findViewById(R.id.btnPause);
@@ -54,8 +57,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnGetVedioInternet = findViewById(R.id.getVedioInternet);
         btnGetVedioConnect = findViewById(R.id.getVedioConnect);
 
+        CameraAction camera = new CameraAction();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.camera_area, camera);
+        transaction.commit();
+
         btnStart.setOnClickListener(this);
-        btnPause.setOnClickListener(this);
+        btnPause.setOnClickListener(this);``` ```
         btnRestart.setOnClickListener(this);
         btnGetVedioGallery.setOnClickListener(this);
         btnGetVedioInternet.setOnClickListener(this);

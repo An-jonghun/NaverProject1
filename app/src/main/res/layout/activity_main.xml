@@ -26,15 +26,16 @@
         android:text="비교할 영상"/>
 
     <LinearLayout
+        android:id="@+id/camera_area"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
         android:orientation="vertical">
-        <TextureView
+      <!--  <TextureView
             android:id="@+id/myAction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/no_image"/>
+            android:src="@drawable/no_image"/>-->
     </LinearLayout>
 
     <TextView
