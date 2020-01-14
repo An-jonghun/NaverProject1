@@ -1,4 +1,4 @@
-package com.example.vedioplaytest;
+package com.example.vedioplaytest.VideoSetting;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat;
 
 import java.io.File;
 
-class FindVideoPath {       //uri에서 휴대폰 내부 동영상 경로 받아오는 클래스
+public class FindVideoPath {       //uri에서 휴대폰 내부 동영상 경로 받아오는 클래스
     private Uri uri;
     private String VedioPath;
 

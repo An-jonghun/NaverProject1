@@ -1,4 +1,4 @@
-package com.example.vedioplaytest;
+package com.example.vedioplaytest.CameraSetting;
 
 import android.app.Activity;
 import android.content.Context;

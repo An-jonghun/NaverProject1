@@ -8,14 +8,16 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import java.io.File;
+import com.example.vedioplaytest.CameraSetting.CameraAction;
+import com.example.vedioplaytest.VideoSetting.FindVideoPath;
+import com.example.vedioplaytest.VideoSetting.Select_InternetView;
+import com.example.vedioplaytest.VideoSetting.VideoSetPath;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -64,13 +66,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         transaction.commit();
 
         btnStart.setOnClickListener(this);
-        btnPause.setOnClickListener(this);``` ```
+        btnPause.setOnClickListener(this);
         btnRestart.setOnClickListener(this);
         btnGetVedioGallery.setOnClickListener(this);
         btnGetVedioInternet.setOnClickListener(this);
         btnGetVedioConnect.setOnClickListener(this);
 
         mediaController = new MediaController(this);
+
     }
 
     @Override
@@ -90,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         } else {
            if(v.getId()==R.id.btnStart || v.getId()==R.id.btnPause || v.getId()==R.id.btnRestart)
-            Toast.makeText(this, "재생에 준비가 되지 않았습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "재생 준비가 되지 않았습니다.", Toast.LENGTH_SHORT).show();
         }
 
         switch (v.getId()) {
@@ -102,11 +105,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.getVedioInternet:
                 GET_VIEOTYPE = SELECT_INTERNET;
-                intentGetVideo = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.naver.com"));
+                intentGetVideo = new Intent(this, Select_InternetView.class);
                 startActivity(intentGetVideo);
-                //  @TODO: 인터넷에서 동영상 String path값 받기;
                 break;
             case R.id.getVedioConnect:
+
+                if(GET_VIEOTYPE==SELECT_INTERNET){
+                  Intent videoURL = getIntent();
+                  videoPath = videoURL.getExtras().getString("Url");
+                }//인터넷에서 받아올 경우
+
                 videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE,videoPath);
                 videoReady = videoSetPath.isVideoReady();
         }

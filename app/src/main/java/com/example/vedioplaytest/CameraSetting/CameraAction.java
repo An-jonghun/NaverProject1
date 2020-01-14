@@ -1,4 +1,4 @@
-package com.example.vedioplaytest;
+package com.example.vedioplaytest.CameraSetting;
 
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.example.vedioplaytest.R;
 
 public class CameraAction extends Fragment implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     private Camera2APIs mCamera;
