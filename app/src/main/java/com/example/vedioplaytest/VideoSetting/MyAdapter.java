@@ -89,6 +89,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 }
                 intentURL = new Intent(context,MainActivity.class);
                 intentURL.putExtra("Url",VIDEO_URL);
+                intentURL.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 v.getContext().startActivity(intentURL);
                 //position으로 어떤 포지션이냐에 따라 uri값 intent로 전달해주기
             }

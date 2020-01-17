@@ -2,6 +2,7 @@ package com.example.vedioplaytest.CameraSetting;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -52,9 +53,10 @@ public class Camera2APIs {
         try {
             for (String cameraId : cameraManager.getCameraIdList()) {
                 CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);
-                if (characteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_BACK) {
+                if (characteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT) {
                     StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-                    Size[] sizes = map.getOutputSizes(SurfaceTexture.class);
+                   /* Size[] sizes = map.getOutputSizes(SurfaceTexture.class);*/
+                    Size[] sizes = map.getOutputSizes(ImageFormat.JPEG);
                     mCameraSize = sizes[0];
                     for (Size size : sizes) {
                         if (size.getWidth() > mCameraSize.getWidth()) {

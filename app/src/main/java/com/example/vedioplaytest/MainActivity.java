@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
-
 import com.example.vedioplaytest.CameraSetting.CameraAction;
 import com.example.vedioplaytest.VideoSetting.FindVideoPath;
 import com.example.vedioplaytest.VideoSetting.Select_InternetView;
@@ -99,17 +98,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.getVedioGallery:
                 GET_VIEOTYPE = SELECT_GALLERY;
+                videoReady = false;
                 intentGetVideo = new Intent(Intent.ACTION_GET_CONTENT);
                 intentGetVideo.setType("video/*");
                 startActivityForResult(intentGetVideo, SELECT_GALLERY);
                 break;
             case R.id.getVedioInternet:
                 GET_VIEOTYPE = SELECT_INTERNET;
+                videoReady = false;
                 intentGetVideo = new Intent(this, Select_InternetView.class);
                 startActivity(intentGetVideo);
                 break;
             case R.id.getVedioConnect:
-
                 if(GET_VIEOTYPE==SELECT_INTERNET){
                   Intent videoURL = getIntent();
                   videoPath = videoURL.getExtras().getString("Url");
