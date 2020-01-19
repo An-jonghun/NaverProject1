@@ -1,12 +1,17 @@
 package com.example.vedioplaytest;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.TextureView;
 import android.view.View;
@@ -20,6 +25,9 @@ import com.example.vedioplaytest.VideoSetting.Select_InternetView;
 import com.example.vedioplaytest.VideoSetting.VideoSetPath;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    String[] permission_list = {
+            Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     private static final int SELECT_GALLERY = 1;
     private static final int SELECT_INTERNET = 2;
@@ -41,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String videoPath;
     boolean videoReady = false; //  비디오영상이 준비됬는지 안됬는지 확인
 
+    VedioData vedioData;
+
     Intent intentGetVideo;
 
     @Override
@@ -58,6 +68,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnGetVedioGallery = findViewById(R.id.getVedioGallery);
         btnGetVedioInternet = findViewById(R.id.getVedioInternet);
 
+        checkPermission();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         CameraAction camera = new CameraAction();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -72,6 +89,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mediaController = new MediaController(this);
 
+        videoView.requestFocus();
+        // 동영상이 재생준비가 완료되엇을떄를 알수있는 리스너
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(),
+                        "동영상 준비완료. '시작'버튼을 누르세요.", Toast.LENGTH_LONG).show();
+
+                videoReady = videoSetPath.isVideoReady();
+            }
+        });
+
+    }
+
+    public void checkPermission(){
+        for(String permission : permission_list){
+            //권한 허용 여부를 확인한다.
+            int chk = checkCallingOrSelfPermission(permission);
+
+            if(chk == PackageManager.PERMISSION_DENIED){
+                //권한 허용을여부를 확인하는 창을 띄운다
+                requestPermissions(permission_list,0);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==0)
+        {
+            for(int i=0; i<grantResults.length; i++)
+            {
+                //허용됬다면
+                if(grantResults[i]==PackageManager.PERMISSION_GRANTED){
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"앱권한설정하세요",Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }
+        }
     }
 
     @Override
@@ -79,13 +140,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
 
         if(GET_VIEOTYPE!=0) {
-            if (GET_VIEOTYPE == SELECT_INTERNET) {
+            vedioData =new VedioData(videoView);
+            if(GET_VIEOTYPE == SELECT_GALLERY){
+                vedioData.setVIDEO_URL(videoPath);
+            }
+           else if (GET_VIEOTYPE == SELECT_INTERNET) {
                 Intent videoURL = getIntent();
                 videoPath = videoURL.getExtras().getString("VIDEO_URL");
+                vedioData.setVIDEO_URL(videoURL.getExtras().getString("VIDEO_URL"));
+                vedioData.setEXERCISE_NAME(videoURL.getExtras().getString("EXERCISE_NAME"));
+                vedioData.setSTOP_SECONDS(videoURL.getExtras().getIntArray("STOP_SECONDS"));
             }//인터넷에서 받아올 경우
-
             videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE, videoPath);
-            videoReady = videoSetPath.isVideoReady();
         }
     }
 
@@ -99,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             switch (v.getId()) {
                 case R.id.btnStart:
                     videoView.start();
+                    vedioData.videoControll();
                     break;
                 case R.id.btnPause:
                     videoView.pause();

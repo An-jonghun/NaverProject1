@@ -83,8 +83,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                         Toast.makeText(v.getContext(), "숄더프레스 운동을 선택하셨습니다.", Toast.LENGTH_SHORT).show();
                         VIDEO_URL = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4";
                         EXERCISE_NAME = title[position];
-                        STOP_SECONDS[0] = 7;
-                        STOP_SECONDS[1] =10;
+                        STOP_SECONDS[0] = 3500;
+                        STOP_SECONDS[1] =7500;
+                        STOP_SECONDS[2]= 13500;
                         break;
                     case 1:
                         Toast.makeText(v.getContext(), "데드리프트 운동을 선택하셨습니다.", Toast.LENGTH_SHORT).show();
