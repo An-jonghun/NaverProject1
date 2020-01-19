@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
@@ -29,10 +30,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnRestart;
     private Button btnGetVedioGallery;
     private Button btnGetVedioInternet;
-    private Button btnGetVedioConnect;
+
 
      VideoView videoView;    //비교할 영상
-     /*TextureView myActionView;       // 내동작*/
+     TextureView myActionView;       // 내동작
 
     MediaController mediaController;
     VideoSetPath videoSetPath;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         videoView = findViewById(R.id.videoView);
-        /*myActionView = findViewById(R.id.myAction);*/
+        myActionView = findViewById(R.id.myAction);
 
         btnStart = findViewById(R.id.btnStart);
         btnPause = findViewById(R.id.btnPause);
@@ -56,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnGetVedioGallery = findViewById(R.id.getVedioGallery);
         btnGetVedioInternet = findViewById(R.id.getVedioInternet);
-        btnGetVedioConnect = findViewById(R.id.getVedioConnect);
 
         CameraAction camera = new CameraAction();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -69,12 +69,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnRestart.setOnClickListener(this);
         btnGetVedioGallery.setOnClickListener(this);
         btnGetVedioInternet.setOnClickListener(this);
-        btnGetVedioConnect.setOnClickListener(this);
 
         mediaController = new MediaController(this);
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(GET_VIEOTYPE!=0) {
+            if (GET_VIEOTYPE == SELECT_INTERNET) {
+                Intent videoURL = getIntent();
+                videoPath = videoURL.getExtras().getString("VIDEO_URL");
+            }//인터넷에서 받아올 경우
+
+            videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE, videoPath);
+            videoReady = videoSetPath.isVideoReady();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
     @Override
     public void onClick(View v) {
         if (videoReady) {
@@ -109,17 +127,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intentGetVideo = new Intent(this, Select_InternetView.class);
                 startActivity(intentGetVideo);
                 break;
-            case R.id.getVedioConnect:
-                if(GET_VIEOTYPE==SELECT_INTERNET){
-                  Intent videoURL = getIntent();
-                  videoPath = videoURL.getExtras().getString("Url");
-                }//인터넷에서 받아올 경우
-
-                videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE,videoPath);
-                videoReady = videoSetPath.isVideoReady();
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

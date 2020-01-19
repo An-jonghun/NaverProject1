@@ -55,8 +55,7 @@ public class Camera2APIs {
                 CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);
                 if (characteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT) {
                     StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-                   /* Size[] sizes = map.getOutputSizes(SurfaceTexture.class);*/
-                    Size[] sizes = map.getOutputSizes(ImageFormat.JPEG);
+                    Size[] sizes = map.getOutputSizes(SurfaceTexture.class);
                     mCameraSize = sizes[0];
                     for (Size size : sizes) {
                         if (size.getWidth() > mCameraSize.getWidth()) {

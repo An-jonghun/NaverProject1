@@ -30,10 +30,6 @@ public class Select_InternetView extends AppCompatActivity {
 
         mAdapter = new MyAdapter(getApplicationContext());
         mRecyclerView.setAdapter(mAdapter);
-
-
-
-
     }
 
 }

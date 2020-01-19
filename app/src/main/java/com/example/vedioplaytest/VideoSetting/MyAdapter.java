@@ -17,8 +17,6 @@ import com.bumptech.glide.Glide;
 import com.example.vedioplaytest.MainActivity;
 import com.example.vedioplaytest.R;
 
-import java.net.URL;
-
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     private  String[] img = {"https://t1.daumcdn.net/cfile/tistory/99965F4D5BEEEED034","https://t1.daumcdn.net/cfile/tistory/991E4E4F5B38E4B813","null",null,null,null,null,null,null};
@@ -32,6 +30,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     //추후에 json이나 다른 형식으로 정리
 
     String VIDEO_URL;
+    String EXERCISE_NAME;
+    int[] STOP_SECONDS = new int[10];    //멈춰야할 시간
 
     Context context;
     Intent intentURL;
@@ -74,6 +74,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 switch (position) {
                     default:
                         Toast.makeText(v.getContext(), "서비스 준비 중입니다.", Toast.LENGTH_SHORT).show();
@@ -81,17 +82,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     case 0:
                         Toast.makeText(v.getContext(), "숄더프레스 운동을 선택하셨습니다.", Toast.LENGTH_SHORT).show();
                         VIDEO_URL = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4";
+                        EXERCISE_NAME = title[position];
+                        STOP_SECONDS[0] = 7;
+                        STOP_SECONDS[1] =10;
                         break;
                     case 1:
                         Toast.makeText(v.getContext(), "데드리프트 운동을 선택하셨습니다.", Toast.LENGTH_SHORT).show();
                         VIDEO_URL = "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4";
+                        EXERCISE_NAME = title[position];
                         break;
                 }
                 intentURL = new Intent(context,MainActivity.class);
-                intentURL.putExtra("Url",VIDEO_URL);
-                intentURL.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intentURL.putExtra("VIDEO_URL",VIDEO_URL);      // 비디오경로
+                intentURL.putExtra("EXERCISE_NAME", EXERCISE_NAME);     //운동이름
+                intentURL.putExtra("STOP_SECONDS", STOP_SECONDS);       //멈추는 위치(초)
                 v.getContext().startActivity(intentURL);
-                //position으로 어떤 포지션이냐에 따라 uri값 intent로 전달해주기
             }
         });
     }

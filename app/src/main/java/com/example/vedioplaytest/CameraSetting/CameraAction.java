@@ -38,9 +38,7 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
         return view;
     }
 
-    public Bitmap getImage() {
-        return myActionView.getBitmap();
-    }
+
 
     // openCamera()만 호출하면 5단계 과정이 전부 수행되며, 프리뷰가 이뤄진다.
     private void openCamera() {
@@ -52,7 +50,8 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
     @Override
     public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize) {
         SurfaceTexture texture = myActionView.getSurfaceTexture();
-        texture.setDefaultBufferSize(cameraSize.getWidth(), cameraSize.getHeight());
+      /*  texture.setDefaultBufferSize(cameraSize.getWidth(), cameraSize.getHeight());*/
+        texture.setDefaultBufferSize(cameraSize.getWidth(),cameraSize.getHeight());
         Surface surface = new Surface(texture);
         mCamera.CaptureSession_4(cameraDevice, surface);
         mCamera.CaptureRequest_5(cameraDevice, surface);
