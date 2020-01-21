@@ -12,17 +12,18 @@ import com.example.vedioplaytest.R;
 
 public class Select_InternetView extends AppCompatActivity {
 
+    protected static Select_InternetView activity = null;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_internetview);
+        activity = this;
 
-        mRecyclerView =  findViewById(R.id.my_recycler_view);
+        mRecyclerView = findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
         mLayoutManager = new LinearLayoutManager(this);
@@ -31,5 +32,4 @@ public class Select_InternetView extends AppCompatActivity {
         mAdapter = new MyAdapter(getApplicationContext());
         mRecyclerView.setAdapter(mAdapter);
     }
-
 }

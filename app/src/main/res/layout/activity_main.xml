@@ -79,7 +79,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="3">
 
         <Button
             android:id="@+id/getVedioGallery"
@@ -93,6 +93,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="인터넷에서 영상  가져오기"/>
+        <Button
+            android:id="@+id/getCameraImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="캡쳐"/>
     </LinearLayout>
 
 </LinearLayout>

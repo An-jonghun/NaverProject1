@@ -5,6 +5,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.Surface;
@@ -21,6 +22,9 @@ import com.example.vedioplaytest.R;
 public class CameraAction extends Fragment implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
     private Camera2APIs mCamera;
     private TextureView myActionView;       // 내동작
+
+    CameraManager cameraManager;
+    String cameraId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,8 +46,8 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
 
     // openCamera()만 호출하면 5단계 과정이 전부 수행되며, 프리뷰가 이뤄진다.
     private void openCamera() {
-        CameraManager cameraManager = mCamera.CameraManager_1(getActivity());
-        String cameraId = mCamera.CameraCharacteristics_2(cameraManager);
+        cameraManager = mCamera.CameraManager_1(getActivity(),getContext(),myActionView);
+        cameraId = mCamera.CameraCharacteristics_2(cameraManager);
         mCamera.CameraDevice_3(cameraManager, cameraId);
     }
 
@@ -55,6 +59,7 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
         Surface surface = new Surface(texture);
         mCamera.CaptureSession_4(cameraDevice, surface);
         mCamera.CaptureRequest_5(cameraDevice, surface);
+
     }
 
     // Surface Texture가 준비 완료된 콜백을 받으면, 카메라 오픈.
@@ -95,5 +100,11 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
     public void onPause() {
         closeCamera();
         super.onPause();
+    }
+    public void takePicture(){
+        mCamera.takePicture();
+    }
+    public void takePreview(){
+        mCamera.CameraDevice_3(cameraManager, cameraId);
     }
 }
