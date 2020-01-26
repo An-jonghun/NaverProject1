@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
@@ -68,13 +69,15 @@ public class Camera2APIs {
     private String mCameraId;
     private TextureView mTextureView;
 
+    CameraManager cameraManager;
+
     public Camera2APIs(Camera2Interface impl) {
         mInterface = impl;
     }
 
     // 카메라 시스템 서비스 매니저 리턴.
     public CameraManager CameraManager_1(Activity activity, Context context, TextureView textureView) {
-        CameraManager cameraManager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+         cameraManager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         mContext = context;
         mTextureView = textureView;
         return cameraManager;
@@ -135,9 +138,9 @@ public class Camera2APIs {
     // null파라미터는 MainThread를 이용하고,
     // 작성한 Thread Handler를 넘겨주면 해당 Thread로 콜백이 떨어진다.
     // 비교적 딜레이가 큰(~500ms) 작업이라 Thread 권장.
-    public void CameraDevice_3(CameraManager cameraManager, String cameraId) {
+    public void CameraDevice_3(CameraManager cameraManager, String cameraId, Handler handler) {
         try {
-            cameraManager.openCamera(cameraId, mCameraDeviceStateCallback, null);
+            cameraManager.openCamera(cameraId,mCameraDeviceStateCallback,null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -155,6 +158,7 @@ public class Camera2APIs {
 
     // Google의 android-Camera2Basic샘플 코드에서는 CaptureRequest를 먼저 수행하는데,
     // 여기서는 Google 프레젠테이션 자료 및 모델 그림의 프로세스를 기준으로 작성하기 위해 CaptureSession을 먼저 수행.
+
     private CameraCaptureSession.StateCallback mCaptureSessionCallback = new CameraCaptureSession.StateCallback() {
         @Override
         public void onConfigured(CameraCaptureSession cameraCaptureSession) {
@@ -284,6 +288,8 @@ public class Camera2APIs {
                 public void onCaptureCompleted(CameraCaptureSession session,
                                                CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
+                    Toast.makeText(mContext, "사진촬영 성공", Toast.LENGTH_SHORT).show();
+                    startPreview();
                 }
 
             };
@@ -306,6 +312,10 @@ public class Camera2APIs {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    private void startPreview() {
+        CameraDevice_3(cameraManager,mCameraId,null);
     }
 
     // 캡쳐된 이미지 정보 및 Metadata가 넘어오는데, 프리뷰에서는 딱히 처리할 작업은 없다.
