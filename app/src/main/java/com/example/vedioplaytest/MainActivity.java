@@ -257,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (layoutId == R.id.getCameraImage) {
             cameraAction.takePicture();
-            cameraAction.takePreview();
         }
     }
 

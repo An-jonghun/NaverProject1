@@ -19,7 +19,6 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -35,14 +34,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import com.example.vedioplaytest.PoseAnalysis.*;
 
 public class Camera2APIs {
 
@@ -68,13 +67,15 @@ public class Camera2APIs {
     private String mCameraId;
     private TextureView mTextureView;
 
+    CameraManager cameraManager;
+
     public Camera2APIs(Camera2Interface impl) {
         mInterface = impl;
     }
 
     // 카메라 시스템 서비스 매니저 리턴.
     public CameraManager CameraManager_1(Activity activity, Context context, TextureView textureView) {
-        CameraManager cameraManager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+        cameraManager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         mContext = context;
         mTextureView = textureView;
         return cameraManager;
@@ -135,7 +136,7 @@ public class Camera2APIs {
     // null파라미터는 MainThread를 이용하고,
     // 작성한 Thread Handler를 넘겨주면 해당 Thread로 콜백이 떨어진다.
     // 비교적 딜레이가 큰(~500ms) 작업이라 Thread 권장.
-    public void CameraDevice_3(CameraManager cameraManager, String cameraId) {
+    public void CameraDevice_3(CameraManager cameraManager, String cameraId, Handler handler) {
         try {
             cameraManager.openCamera(cameraId, mCameraDeviceStateCallback, null);
         } catch (CameraAccessException e) {
@@ -155,6 +156,7 @@ public class Camera2APIs {
 
     // Google의 android-Camera2Basic샘플 코드에서는 CaptureRequest를 먼저 수행하는데,
     // 여기서는 Google 프레젠테이션 자료 및 모델 그림의 프로세스를 기준으로 작성하기 위해 CaptureSession을 먼저 수행.
+
     private CameraCaptureSession.StateCallback mCaptureSessionCallback = new CameraCaptureSession.StateCallback() {
         @Override
         public void onConfigured(CameraCaptureSession cameraCaptureSession) {
@@ -192,7 +194,6 @@ public class Camera2APIs {
             e.printStackTrace();
         }
     }
-
 
     protected void takePicture() {
         if (null == mCameraDevice) {
@@ -264,6 +265,13 @@ public class Camera2APIs {
                         file.createNewFile();  // 파일을 생성해주고
                         FileOutputStream out = new FileOutputStream(file);
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);  // 넘거 받은 bitmap을 jpeg(손실압축)으로 저장해줌
+
+                        if (file.length() >= 300000) { // 파일 크기가 크면 줄여줍니다!
+                            double scale = file.length() / 300000;
+                            Bitmap reversed = Bitmap.createBitmap(bitmap, 0, 0, (int) (bitmap.getWidth() / scale), (int) (bitmap.getHeight() / scale));
+                            save(reversed);
+                        }
+
                         out.close(); // 마무리로 닫아줍니다.
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -278,14 +286,28 @@ public class Camera2APIs {
             final Handler backgroudHandler = new Handler(thread.getLooper());
             reader.setOnImageAvailableListener(readerListener, backgroudHandler);
 
-
             final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback() {
                 @Override
                 public void onCaptureCompleted(CameraCaptureSession session,
                                                CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                }
+                    Toast.makeText(mContext, "사진촬영 성공", Toast.LENGTH_SHORT).show();
+                    startPreview();
+                    String resultJson = poseEstimation.estimate(file.getPath());
+                    Log.d("결과", resultJson);
 
+                    // 내리는 자세
+                    String resultJson1 = "{    \"predictions\": [        {            \"0\": {                \"score\": 0.8673470616340637,                \"x\": 0.4913294797687861,                \"y\": 0.16981132075471697            },            \"1\": {                \"score\": 0.6670379638671875,                \"x\": 0.5028901734104047,                \"y\": 0.28679245283018867            },            \"2\": {                \"score\": 0.6127960085868835,                \"x\": 0.3583815028901734,                \"y\": 0.2792452830188679            },            \"3\": {                \"score\": 0.5539549589157104,                \"x\": 0.11560693641618497,                \"y\": 0.28679245283018867            },            \"4\": {                \"score\": 0.5106599926948547,                \"x\": 0.15606936416184972,                \"y\": 0.16981132075471697            },            \"5\": {                \"score\": 0.605889081954956,                \"x\": 0.6416184971098265,                \"y\": 0.29056603773584905            },            \"6\": {                \"score\": 0.6189420223236084,                \"x\": 0.884393063583815,                \"y\": 0.2943396226415094            },            \"7\": {                \"score\": 0.5130900740623474,                \"x\": 0.8497109826589595,                \"y\": 0.17358490566037735            },            \"8\": {                \"score\": 0.40910202264785767,                \"x\": 0.3988439306358382,                \"y\": 0.5547169811320755            },            \"9\": {                \"score\": 0.6938280463218689,                \"x\": 0.2832369942196532,                \"y\": 0.5660377358490566            },            \"10\": {                \"score\": 0.37752819061279297,                \"x\": 0.20809248554913296,                \"y\": 0.8415094339622642            },            \"11\": {                \"score\": 0.35110533237457275,                \"x\": 0.5780346820809249,                \"y\": 0.5509433962264151            },            \"12\": {                \"score\": 0.6153320670127869,                \"x\": 0.6763005780346821,                \"y\": 0.5660377358490566            },            \"13\": {                \"score\": 0.4046829640865326,                \"x\": 0.7514450867052023,                \"y\": 0.8452830188679246            },            \"14\": {                \"score\": 0.7420729994773865,                \"x\": 0.4624277456647399,                \"y\": 0.1509433962264151            },            \"15\": {                \"score\": 0.8439532518386841,                \"x\": 0.5202312138728323,                \"y\": 0.1509433962264151            },            \"16\": {                \"score\": 0.8238920569419861,                \"x\": 0.4277456647398844,                \"y\": 0.16981132075471697            },            \"17\": {                \"score\": 0.8851520419120789,                \"x\": 0.5606936416184971,                \"y\": 0.16981132075471697            }        }    ]}";
+                    if (!"Error".equals(resultJson1)) {
+                        new poseAnalysis(resultJson1, 0);
+                    }
+
+                    // 올리는 자세
+                    String resultJson2 = "{    \"predictions\": [        {            \"0\": {                \"score\": 0.7381410002708435,                \"x\": 0.41139240506329117,                \"y\": 0.2990353697749196            },            \"1\": {                \"score\": 0.5715228319168091,                \"x\": 0.4050632911392405,                \"y\": 0.3890675241157556            },            \"2\": {                \"score\": 0.51313316822052,                \"x\": 0.27848101265822783,                \"y\": 0.3858520900321543            },            \"3\": {                \"score\": 0.17065179347991943,                \"x\": 0.20253164556962025,                \"y\": 0.2797427652733119            },            \"4\": {                \"score\": 0.34357357025146484,                \"x\": 0.20253164556962025,                \"y\": 0.2508038585209003            },            \"5\": {                \"score\": 0.4643253684043884,                \"x\": 0.5379746835443038,                \"y\": 0.39228295819935693            },            \"6\": {                \"score\": 0.29813212156295776,                \"x\": 0.6139240506329114,                \"y\": 0.2540192926045016            },            \"7\": {                \"score\": 0.13536100089550018,                \"x\": 0.6265822784810127,                \"y\": 0.14469453376205788            },            \"8\": {                \"score\": 0.4434170126914978,                \"x\": 0.3227848101265823,                \"y\": 0.6302250803858521            },            \"9\": {                \"score\": 0.6919880509376526,                \"x\": 0.1962025316455696,                \"y\": 0.639871382636656            },            \"10\": {                \"score\": 0.415800005197525,                \"x\": 0.18354430379746836,                \"y\": 0.8617363344051447            },            \"11\": {                \"score\": 0.40793633460998535,                \"x\": 0.5126582278481012,                \"y\": 0.6237942122186495            },            \"12\": {                \"score\": 0.6236677169799805,                \"x\": 0.6455696202531646,                \"y\": 0.6463022508038585            },            \"13\": {                \"score\": 0.4883829951286316,                \"x\": 0.6835443037974683,                \"y\": 0.8713826366559485            },            \"14\": {                \"score\": 0.8068264722824097,                \"x\": 0.379746835443038,                \"y\": 0.2861736334405145            },            \"15\": {                \"score\": 0.9096050262451172,                \"x\": 0.4430379746835443,                \"y\": 0.2861736334405145            },            \"16\": {                \"score\": 0.8194683194160461,                \"x\": 0.33544303797468356,                \"y\": 0.3086816720257235            },            \"17\": {                \"score\": 0.7890939712524414,                \"x\": 0.4873417721518987,                \"y\": 0.31189710610932475            }        }    ]}";
+                    if (!"Error".equals(resultJson2)) {
+                        new poseAnalysis(resultJson2, 1);
+                    }
+                }
             };
 
             mCameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
@@ -306,6 +328,10 @@ public class Camera2APIs {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    private void startPreview() {
+        CameraDevice_3(cameraManager, mCameraId, null);
     }
 
     // 캡쳐된 이미지 정보 및 Metadata가 넘어오는데, 프리뷰에서는 딱히 처리할 작업은 없다.
@@ -333,5 +359,4 @@ public class Camera2APIs {
             mCameraDevice = null;
         }
     }
-
 }

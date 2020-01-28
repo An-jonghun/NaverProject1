@@ -26,6 +26,8 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
     CameraManager cameraManager;
     String cameraId;
 
+    Surface surface;
+    CameraDevice cameraDevice;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +50,7 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
     private void openCamera() {
         cameraManager = mCamera.CameraManager_1(getActivity(),getContext(),myActionView);
         cameraId = mCamera.CameraCharacteristics_2(cameraManager);
-        mCamera.CameraDevice_3(cameraManager, cameraId);
+        mCamera.CameraDevice_3(cameraManager, cameraId,null);
     }
 
     @Override
@@ -59,6 +61,9 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
         Surface surface = new Surface(texture);
         mCamera.CaptureSession_4(cameraDevice, surface);
         mCamera.CaptureRequest_5(cameraDevice, surface);
+
+        this.cameraDevice = cameraDevice;
+        this.surface = surface;
 
     }
 
@@ -103,8 +108,5 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
     }
     public void takePicture(){
         mCamera.takePicture();
-    }
-    public void takePreview(){
-        mCamera.CameraDevice_3(cameraManager, cameraId);
     }
 }
