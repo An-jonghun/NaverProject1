@@ -71,6 +71,7 @@ public class Camera2APIs {
     private Context mContext;
     private String mCameraId;
     private TextureView mTextureView;
+    private File file;
 
     CameraManager cameraManager;
 
@@ -201,9 +202,9 @@ public class Camera2APIs {
     }
 
 
-    protected void takePicture() {
+    protected String takePicture() {
         if (null == mCameraDevice) {
-            return;
+            return null;
         }
 
         try {
@@ -239,7 +240,7 @@ public class Camera2APIs {
             Date date = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
 
-            final File file = new File(mContext.getCacheDir(), "pic_" + dateFormat.format(date) + ".jpg");
+            file = new File(mContext.getCacheDir(), "pic_" + dateFormat.format(date) + ".jpg");
 
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
@@ -311,12 +312,12 @@ public class Camera2APIs {
 
                 @Override
                 public void onConfigureFailed(CameraCaptureSession session) {
-
                 }
             }, backgroudHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+        return file.getPath();              //  파일경로 보내주기
     }
 
     private void startPreview() {

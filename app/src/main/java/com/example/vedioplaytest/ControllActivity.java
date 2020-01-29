@@ -20,6 +20,9 @@ public class ControllActivity implements Serializable {
   CameraAction cameraAction;
   Context context;
 
+  boolean analysisCheck;
+    String imgFilePath;
+
     public ControllActivity(VideoView videoView, CameraAction cameraAction, Context context) {
         this.videoView = videoView;
         this.cameraAction = cameraAction;
@@ -75,6 +78,7 @@ public class ControllActivity implements Serializable {
     }
 
     public void cameraCapture() {            // 카메라 캡쳐
-        cameraAction.takePicture();
+        imgFilePath = cameraAction.takePicture();
+        String resultJson =
     }
 }
