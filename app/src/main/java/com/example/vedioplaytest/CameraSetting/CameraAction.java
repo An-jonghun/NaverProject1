@@ -106,7 +106,7 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
         closeCamera();
         super.onPause();
     }
-    public void takePicture(){
-        mCamera.takePicture();
+    public String takePicture(){
+        return mCamera.takePicture();
     }
 }

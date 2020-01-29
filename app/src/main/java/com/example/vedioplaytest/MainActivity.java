@@ -208,13 +208,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void removeCache() {
         File cachPath = new File(this.getCacheDir() + "");
-        Log.d("테스트", "캐시 삭제 시작");
+        Log.d("결과", "캐시 삭제 시작");
 
         if (cachPath.isDirectory()) {
             String[] children = cachPath.list();
             for (int i = 0; i < children.length; i++) {
                 File target = new File(cachPath, children[i]);
-                Log.d("테스트", target.getPath() + "");
+                Log.d("결과", target.getPath() + "");
                 target.delete();
             }
         }
@@ -254,9 +254,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-
         if (layoutId == R.id.getCameraImage) {
-            cameraAction.takePicture();
+            String getResult = cameraAction.takePicture();
+            Log.d("결과", "메인 엑티비티 " + getResult);
         }
     }
 
@@ -288,6 +288,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             GET_VIEOTYPE = 0;
         }
     }
-
 }
-
