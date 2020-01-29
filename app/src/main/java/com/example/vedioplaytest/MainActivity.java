@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -16,12 +17,12 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 import com.example.vedioplaytest.CameraSetting.CameraAction;
-import com.example.vedioplaytest.PoseAnalysis.poseEstimation;
 import com.example.vedioplaytest.VideoSetting.FindVideoPath;
 import com.example.vedioplaytest.VideoSetting.Select_InternetView;
 import com.example.vedioplaytest.VideoSetting.VideoSetPath;
@@ -35,17 +36,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int PERMISSION_STORAGE_FOR_GALLERY = 2;
     private static final int PERMISSION_STORAGE_FOR_INTERNET = 3;
 
+    private static final int SELECT_GET_VIDEO_FROM = 5000;
+
     private static final int SELECT_GALLERY = 1;
     private static final int SELECT_INTERNET = 2;
     public static int GET_VIEOTYPE = 0;
-    protected String tempImage;
 
-    private Button btnStart;
-    private Button btnPause;
-    private Button btnRestart;
-    private Button btnGetVedioGallery;
-    private Button btnGetVedioInternet;
-    private Button btnGetCameraImage;
+    private ImageButton btnStart;
+    private ImageButton btnPause;
+    private ImageButton btnRestart;
+
+    private LinearLayout videoLayer;
 
     VideoView videoView;    //비교할 영상
     TextureView myActionView;       // 내동작
@@ -75,9 +76,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnPause = findViewById(R.id.btnPause);
         btnRestart = findViewById(R.id.btnRestart);
 
-        btnGetVedioGallery = findViewById(R.id.getVedioGallery);
-        btnGetVedioInternet = findViewById(R.id.getVedioInternet);
-        btnGetCameraImage = findViewById(R.id.getCameraImage);
+        videoLayer = findViewById(R.id.video_layer);
+        videoLayer.setVisibility(View.INVISIBLE);
 
         cameraAction = new CameraAction();
 
@@ -88,9 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnStart.setOnClickListener(this);
         btnPause.setOnClickListener(this);
         btnRestart.setOnClickListener(this);
-        btnGetVedioGallery.setOnClickListener(this);
-        btnGetVedioInternet.setOnClickListener(this);
-        btnGetCameraImage.setOnClickListener(this);
 
         mediaController = new MediaController(this);
 
@@ -109,6 +106,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         initPermission();
+
+        setActionBar();
+    }
+
+    private void setActionBar() {
+        MainActionBar mActionBar = new MainActionBar(this, getSupportActionBar());
+        mActionBar.setActionBar(R.layout.main_action_bar);
+    }
+
+    public void layoutClick(View view) {
+        int layoutId = view.getId();
+
+        if (layoutId == R.id.call_video_from_outsource) {
+            Intent intent = new Intent(this, GetVideoFrom.class);
+            startActivityForResult(intent, SELECT_GET_VIDEO_FROM);
+        }
     }
 
     @Override
@@ -157,9 +170,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (requestCode == PERMISSION_CAMERA && CAMERA.equals(permissions[i])) {
                     initCamera();
                 } else if (requestCode == PERMISSION_STORAGE_FOR_GALLERY) {
-                    getVideo(R.id.getVedioGallery);
+                    getVideo(5001);
                 } else if (requestCode == PERMISSION_STORAGE_FOR_INTERNET) {
-                    getVideo(R.id.getVedioInternet);
+                    getVideo(5002);
                 }
             } else {
                 if (requestCode == 0 && CAMERA.equals(permissions[i])) {
@@ -175,21 +188,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+// TODO: 인터넷에서 영상 받아오는 부분 구조 변경해서 startActivityForResult로 결과 받은 후에 영상 연결하기
 
-        if (GET_VIEOTYPE != 0) {
-            controllActivity = new ControllActivity(videoView, cameraAction, getApplicationContext());
-            if (GET_VIEOTYPE == SELECT_GALLERY) {
-                controllActivity.setVIDEO_URL(videoPath);
-            } else if (GET_VIEOTYPE == SELECT_INTERNET) {
-                Intent videoURL = getIntent();
-                videoPath = videoURL.getExtras().getString("VIDEO_URL");
-                controllActivity.setVIDEO_URL(videoURL.getExtras().getString("VIDEO_URL"));
-                controllActivity.setEXERCISE_NAME(videoURL.getExtras().getString("EXERCISE_NAME"));
-                controllActivity.setSTOP_SECONDS(videoURL.getExtras().getIntArray("STOP_SECONDS"));
-            } //인터넷에서 받아올 경우
-
-            videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE, videoPath);
-        }
+//        if (GET_VIEOTYPE != 0) {
+//            controllActivity = new ControllActivity(videoView, cameraAction, getApplicationContext());
+//            if (GET_VIEOTYPE == SELECT_GALLERY) {
+//                controllActivity.setVIDEO_URL(videoPath);
+//            } else if (GET_VIEOTYPE == SELECT_INTERNET) {
+//                Intent videoURL = getIntent();
+//                videoPath = videoURL.getExtras().getString("VIDEO_URL");
+//                controllActivity.setVIDEO_URL(videoURL.getExtras().getString("VIDEO_URL"));
+//                controllActivity.setEXERCISE_NAME(videoURL.getExtras().getString("EXERCISE_NAME"));
+//                controllActivity.setSTOP_SECONDS(videoURL.getExtras().getIntArray("STOP_SECONDS"));
+//            } //인터넷에서 받아올 경우
+//
+//            videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE, videoPath);
+//        }
     }
 
     @Override
@@ -239,19 +253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (layoutId == R.id.btnStart || layoutId == R.id.btnPause || layoutId == R.id.btnRestart)
                 Toast.makeText(this, "재생 준비가 되지 않았습니다.", Toast.LENGTH_SHORT).show();
         }
-
-        if (layoutId == R.id.getVedioGallery || layoutId == R.id.getVedioInternet) {
-            if (checkCallingOrSelfPermission(STORAGE) == PackageManager.PERMISSION_DENIED) {
-                if (layoutId == R.id.getVedioGallery) {
-                    requirePermission(STORAGE, PERMISSION_STORAGE_FOR_GALLERY);
-                } else {
-                    requirePermission(STORAGE, PERMISSION_STORAGE_FOR_INTERNET);
-                }
-            } else {
-                getVideo(layoutId);
-            }
-        }
-
+/*
         if (layoutId == R.id.getCameraImage) {
             new Thread(new Runnable() {
                 @Override
@@ -268,16 +270,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }).start();
         }
+*/
     }
 
-    private void getVideo(int layoutId) {
-        if (layoutId == R.id.getVedioGallery) {
+    private void getVideo(int select) {
+        if (select == 5001) {
             GET_VIEOTYPE = SELECT_GALLERY;
             videoReady = false;
             intentGetVideo = new Intent(Intent.ACTION_GET_CONTENT);
             intentGetVideo.setType("video/*");
             startActivityForResult(intentGetVideo, SELECT_GALLERY);
-        } else if (layoutId == R.id.getVedioInternet) {
+        } else if (select == 5002) {
             GET_VIEOTYPE = SELECT_INTERNET;
             videoReady = false;
             intentGetVideo = new Intent(this, Select_InternetView.class);
@@ -288,14 +291,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            Uri uri = data.getData();
-            FindVideoPath mfindVideoPath = new FindVideoPath(uri);
-            videoPath = mfindVideoPath.getRealPathFromURI(getApplicationContext(), uri);     //경로받기
-            videoReady = true;
-        } else {
-            Toast.makeText(getApplicationContext(), "영상 받아오기를 취소하였습니다.", Toast.LENGTH_SHORT).show();
-            GET_VIEOTYPE = 0;
+        if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d("결과",  "요청 취소");
+
+            return;
+        }
+        if (requestCode == SELECT_GET_VIDEO_FROM) {
+            int select = data.getIntExtra("button", 5000);
+            Log.d("결과", "인텐트 버튼클릭 " + select);
+
+            if (checkCallingOrSelfPermission(STORAGE) == PackageManager.PERMISSION_DENIED) {
+                if (select == 5001) {
+                    requirePermission(STORAGE, PERMISSION_STORAGE_FOR_GALLERY);
+                } else if (select == 5002) {
+                    requirePermission(STORAGE, PERMISSION_STORAGE_FOR_INTERNET);
+                } else {
+                    // 선택 취소
+                }
+            } else {
+                getVideo(select);
+            }
+        }
+        else {
+            Log.d("결과", "취소 ? " + requestCode + " and " + resultCode);
+            if (data != null) {
+                Uri uri = data.getData();
+                FindVideoPath mfindVideoPath = new FindVideoPath(uri);
+                videoPath = mfindVideoPath.getRealPathFromURI(getApplicationContext(), uri);     //경로받기
+                videoReady = true;
+                videoLayer.setVisibility(View.VISIBLE);
+            } else {
+                Toast.makeText(getApplicationContext(), "영상 받아오기를 취소하였습니다.", Toast.LENGTH_SHORT).show();
+                GET_VIEOTYPE = 0;
+            }
         }
     }
 }

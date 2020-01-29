@@ -15,9 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <activity android:name=".GetVideoFrom"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"/>
+
         <activity
             android:name=".VideoSetting.Select_InternetView"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".MainActivity"

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.vedioplaytest.MainActionBar;
 import com.example.vedioplaytest.MainActivity;
 import com.example.vedioplaytest.R;
 
@@ -31,5 +32,12 @@ public class Select_InternetView extends AppCompatActivity {
 
         mAdapter = new MyAdapter(getApplicationContext());
         mRecyclerView.setAdapter(mAdapter);
+
+        setActionBar();
+    }
+
+    private void setActionBar() {
+        MainActionBar mActionBar = new MainActionBar(this, getSupportActionBar());
+        mActionBar.setActionBar(R.layout.internet_action_bar);
     }
 }

@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="mainVideoButton" parent = "@android:style/Widget.Button">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:background">@color/naverBackground</item>
+        <item name="android:textColor">@color/naverForeground</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
 </resources>
