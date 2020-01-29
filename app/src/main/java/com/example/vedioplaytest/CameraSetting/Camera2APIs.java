@@ -19,6 +19,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -27,9 +28,7 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,8 +39,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import com.example.vedioplaytest.PoseAnalysis.*;
 
 public class Camera2APIs {
 
@@ -73,7 +70,6 @@ public class Camera2APIs {
         mInterface = impl;
     }
 
-    // 카메라 시스템 서비스 매니저 리턴.
     public CameraManager CameraManager_1(Activity activity, Context context, TextureView textureView) {
         cameraManager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         mContext = context;
@@ -81,14 +77,6 @@ public class Camera2APIs {
         return cameraManager;
     }
 
-    // 사용가능한 카메라 리스트를 가져와 후면 카메라(LENS_FACING_BACK) 사용하여 해당 cameraId 리턴.
-    // StreamConfiguratonMap은 CaptureSession을 생성할때 surfaces를 설정하기 위한 출력 포맷 및 사이즈등의 정보를 가지는 클래스.
-    // 사용가능한 출력 사이즈중 가장 큰 사이즈 선택.
-
-    // 참고로, INFO_SUPPORTED_HARDWARE_LEVEL키값으로 카메라 디바이스의 레벨을 알 수 있는데
-    // LEGACY < LIMITED < FULL < LEVEL_3 순으로 고성능이며 더 세밀한 카메라 설정이 가능하다.
-    // LEGACY 디바이스의 경우 구형 안드로이드 단말 호환을 위해 Camera2 API는 기존 Camera API의 인터페이스에 불과하다.
-    // 즉, 프레임 단위 컨트롤 등의 Camera2 기능은 사용할 수 없다.
     public String CameraCharacteristics_2(CameraManager cameraManager) {
         try {
             for (String cameraId : cameraManager.getCameraIdList()) {
@@ -112,8 +100,6 @@ public class Camera2APIs {
         return null;
     }
 
-    // onOpened()에서 취득한 CameraDevice로 CaptureSession, CaptureRequest가 이뤄지는데
-    // Camera2 APIs 처리과정을 MainActivity에서 일원화하여 표현하기 위해 인터페이스로 처리.
     private CameraDevice.StateCallback mCameraDeviceStateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
@@ -132,10 +118,6 @@ public class Camera2APIs {
         }
     };
 
-    // 비동기 콜백 CameraDevice.StateCallback onOpened()로 취득.
-    // null파라미터는 MainThread를 이용하고,
-    // 작성한 Thread Handler를 넘겨주면 해당 Thread로 콜백이 떨어진다.
-    // 비교적 딜레이가 큰(~500ms) 작업이라 Thread 권장.
     public void CameraDevice_3(CameraManager cameraManager, String cameraId, Handler handler) {
         try {
             cameraManager.openCamera(cameraId, mCameraDeviceStateCallback, null);
@@ -143,19 +125,6 @@ public class Camera2APIs {
             e.printStackTrace();
         }
     }
-
-    // 생성된 세션에 카메라 프리뷰를 위한 CaptureRequest정보 설정.
-    // 프리뷰 화면은 연속되는 이미지가 보여지기 때문에 CONTROL_AF_MODE_CONTINUOUS_PICTURE로 포커스를 지속적으로 맞추고,
-    // setRepeatingRequest로 해당 세션에 설정된 CaptureRequest세팅으로 이미지를 지속적으로 요청.
-
-    // setRepeatingRequest의 null파라미터는 MainThread를 사용하고,
-    // 작성한 Thread Handler를 넘겨주면 해당 Thread로 콜백이 떨어진다.
-    // 프리뷰 화면은 지속적으로 화면 캡쳐가 이뤄지기 때문에,
-    // MainThread 사용 시 Frame drop이 발생할 수 있다.
-    // Background Thread 사용 권장.
-
-    // Google의 android-Camera2Basic샘플 코드에서는 CaptureRequest를 먼저 수행하는데,
-    // 여기서는 Google 프레젠테이션 자료 및 모델 그림의 프로세스를 기준으로 작성하기 위해 CaptureSession을 먼저 수행.
 
     private CameraCaptureSession.StateCallback mCaptureSessionCallback = new CameraCaptureSession.StateCallback() {
         @Override
@@ -226,7 +195,6 @@ public class Camera2APIs {
 
             captureBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
 
-            // Orientation
             int rotation = ((Activity) mContext).getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
 
@@ -234,6 +202,7 @@ public class Camera2APIs {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
 
             final File file = new File(mContext.getCacheDir(), "pic_" + dateFormat.format(date) + ".jpg");
+//            final File file = new File(Environment.getExternalStorageDirectory() + "/DCIM", "pic_" + dateFormat.format(date) + ".jpg");
 
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
@@ -311,7 +280,7 @@ public class Camera2APIs {
 
                 }
             }, backgroudHandler);
-            Log.d("결과", "사진 저장 " + file.getPath());
+
             return file.getPath();
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -323,9 +292,6 @@ public class Camera2APIs {
         CameraDevice_3(cameraManager, mCameraId, null);
     }
 
-    // 캡쳐된 이미지 정보 및 Metadata가 넘어오는데, 프리뷰에서는 딱히 처리할 작업은 없다.
-    // 사진 촬영의 경우라면, onCaptureCompleted()에서 촬영이 완료되고 이미지가 저장되었다는 메세지를 띄우는 시점.
-    // 캡쳐 이미지와 Metadata 매칭은 Timestamp로 매칭가능하다.
     private CameraCaptureSession.CaptureCallback mCaptureCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureProgressed(CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult) {

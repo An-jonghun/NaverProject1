@@ -1,5 +1,6 @@
 package com.example.vedioplaytest.PoseAnalysis;
 
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -82,7 +83,6 @@ public class poseEstimation {
                 br.close();
                 System.out.println(response.toString());
 
-                Log.d("결과", response.toString());
                 return response.toString();
 
             } else {
@@ -93,7 +93,7 @@ public class poseEstimation {
         } catch (Exception e) {
             System.out.println(e);
 
-            return "Error";
+            return e.toString();
         }
     }
 }

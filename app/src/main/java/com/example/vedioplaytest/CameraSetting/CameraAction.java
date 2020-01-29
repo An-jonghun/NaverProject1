@@ -1,22 +1,18 @@
 package com.example.vedioplaytest.CameraSetting;
 
-import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.example.vedioplaytest.R;
 
 public class CameraAction extends Fragment implements Camera2APIs.Camera2Interface, TextureView.SurfaceTextureListener {
@@ -25,7 +21,6 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
 
     CameraManager cameraManager;
     String cameraId;
-
     Surface surface;
     CameraDevice cameraDevice;
     @Override
@@ -43,8 +38,6 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
 
         return view;
     }
-
-
 
     // openCamera()만 호출하면 5단계 과정이 전부 수행되며, 프리뷰가 이뤄진다.
     private void openCamera() {
@@ -64,11 +57,9 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
 
         this.cameraDevice = cameraDevice;
         this.surface = surface;
-
     }
 
     // Surface Texture가 준비 완료된 콜백을 받으면, 카메라 오픈.
-
     @Override
     public void onResume() {
         super.onResume();

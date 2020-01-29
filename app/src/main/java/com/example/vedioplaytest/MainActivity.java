@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,12 +20,11 @@ import android.widget.Button;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
-
 import com.example.vedioplaytest.CameraSetting.CameraAction;
+import com.example.vedioplaytest.PoseAnalysis.poseEstimation;
 import com.example.vedioplaytest.VideoSetting.FindVideoPath;
 import com.example.vedioplaytest.VideoSetting.Select_InternetView;
 import com.example.vedioplaytest.VideoSetting.VideoSetPath;
-
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int SELECT_GALLERY = 1;
     private static final int SELECT_INTERNET = 2;
     public static int GET_VIEOTYPE = 0;
+    protected String tempImage;
 
     private Button btnStart;
     private Button btnPause;
@@ -47,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnGetVedioGallery;
     private Button btnGetVedioInternet;
     private Button btnGetCameraImage;
-
 
     VideoView videoView;    //비교할 영상
     TextureView myActionView;       // 내동작
@@ -255,8 +253,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (layoutId == R.id.getCameraImage) {
-            String getResult = cameraAction.takePicture();
-            Log.d("결과", "메인 엑티비티 " + getResult);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("결과", "캡쳐 스레드 시작");
+                    tempImage = cameraAction.takePicture();
+                    Log.d("결과", "메인 엑티비티 " + tempImage);
+
+                    if (!"Error".equals(tempImage) && !"null".equals(tempImage)) {
+                        String resultJSON = poseEstimation.estimate(tempImage);
+
+                        Log.d("결과", resultJSON);
+                    }
+                }
+            }).start();
         }
     }
 
