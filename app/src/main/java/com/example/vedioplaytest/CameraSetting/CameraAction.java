@@ -104,7 +104,4 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
     public void takePicture(){
         mCamera.takePicture();
     }
-    public void takePreview(){
-        mCamera.CameraDevice_3(cameraManager, cameraId);
-    }
 }
