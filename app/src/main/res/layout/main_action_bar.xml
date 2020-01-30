@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/naverBackground">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="WOW BRUNING"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/naverForeground"
+        android:layout_centerHorizontal="true">
+    </TextView>
+
+    <ImageButton
+        android:id="@+id/call_video_from_outsource"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/naverBackground"
+        android:onClick="layoutClick"
+        android:src="@drawable/button_select_video_from">
+
+    </ImageButton>
+
+</RelativeLayout>

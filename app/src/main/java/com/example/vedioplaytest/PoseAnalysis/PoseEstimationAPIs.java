@@ -14,8 +14,8 @@ import java.net.URL;
 import java.net.URLConnection;
 
 // 네이버 얼굴인식 API 예제
+public class PoseEstimationAPIs {
 
-public class PoseEstimation {
     public static String estimate(String imgPath) {
 
         StringBuffer reqStr = new StringBuffer();
@@ -24,7 +24,7 @@ public class PoseEstimation {
 
         try {
             String paramName = "image"; // 파라미터명은 image로 지정
-            String imgFile = imgPath;
+            String imgFile =imgPath;
             File uploadFile = new File(imgFile);
             String apiURL = "https://naveropenapi.apigw.ntruss.com/vision-pose/v1/estimate";
             URL url = new URL(apiURL);

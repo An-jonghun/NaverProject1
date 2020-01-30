@@ -1,14 +1,11 @@
 package com.example.vedioplaytest.PoseAnalysis;
 
-import android.os.Bundle;
 import android.util.Log;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
-public class poseAnalysis {
-    private userJSON user;
+public class PoseAnalysis {
+    private UserJSON user;
 
 // JSON 받아서 저장
 //    private String userString;
@@ -16,10 +13,10 @@ public class poseAnalysis {
     // 1 = 올리는 자세
     // 0 = 내리는 자세
 
-    public poseAnalysis(String jsonData, int status) {
+    public PoseAnalysis(String jsonData, int status) {
 
-//        user = new userJSON(userString);
-        user = new userJSON(jsonData);
+//        user = new UserJSON(userString);
+        user = new UserJSON(jsonData);
 
         if (status == 1) { // 올리는 자세
             checkPress(true);

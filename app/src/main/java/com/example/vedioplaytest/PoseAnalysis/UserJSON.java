@@ -3,7 +3,7 @@ package com.example.vedioplaytest.PoseAnalysis;
 import java.util.ArrayList;
 import java.util.List;
 
-public class userJSON {
+public class UserJSON {
     private double shoulderLeftX;
     private double shoulderLeftY;
     private double shoulderRightX;
@@ -19,12 +19,12 @@ public class userJSON {
     private double wristRightX;
     private double wristRightY;
 
-    private getObjectJSON getData;
+    private GetObjectJSON getData;
 
     private List<Double> dataSet = new ArrayList<>();
 
-    public userJSON(String json) {
-        this.getData = new getObjectJSON(json);
+    public UserJSON(String json) {
+        this.getData = new GetObjectJSON(json);
         setData();
     }
 

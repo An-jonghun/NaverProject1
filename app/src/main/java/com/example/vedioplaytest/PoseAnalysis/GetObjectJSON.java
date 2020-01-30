@@ -6,10 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class getObjectJSON {
+public class GetObjectJSON {
     private JSONObject data;
 
-    public getObjectJSON(String json) {
+    public GetObjectJSON(String json) {
         try {
             JSONObject temp = new JSONObject(json);
             JSONArray tempJson = temp.getJSONArray("predictions");
