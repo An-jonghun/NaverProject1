@@ -49,7 +49,6 @@ public class CameraAction extends Fragment implements Camera2APIs.Camera2Interfa
     @Override
     public void onCameraDeviceOpened(CameraDevice cameraDevice, Size cameraSize) {
         SurfaceTexture texture = myActionView.getSurfaceTexture();
-      /*  texture.setDefaultBufferSize(cameraSize.getWidth(), cameraSize.getHeight());*/
         texture.setDefaultBufferSize(cameraSize.getWidth(),cameraSize.getHeight());
         Surface surface = new Surface(texture);
         mCamera.CaptureSession_4(cameraDevice, surface);

@@ -3,6 +3,7 @@ package com.example.vedioplaytest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -31,6 +32,7 @@ public class GetVideoFrom extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         int layoutId = v.getId();
 
+        Log.d("결과", "버튼클릭! " + layoutId);
         Intent intent = new Intent();
 
         switch (layoutId) {

@@ -190,6 +190,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 // TODO: 인터넷에서 영상 받아오는 부분 구조 변경해서 startActivityForResult로 결과 받은 후에 영상 연결하기
+
+        if (GET_VIEOTYPE != 0) {
+            controllActivity = new ControllActivity(videoView, cameraAction, getApplicationContext());
+            if (GET_VIEOTYPE == SELECT_GALLERY) {
+                controllActivity.setVIDEO_URL(videoPath);
+            } else if (GET_VIEOTYPE == SELECT_INTERNET) {
+                Intent videoURL = getIntent();
+                videoPath = videoURL.getExtras().getString("VIDEO_URL");
+                controllActivity.setVIDEO_URL(videoURL.getExtras().getString("VIDEO_URL"));
+                controllActivity.setEXERCISE_NAME(videoURL.getExtras().getString("EXERCISE_NAME"));
+                controllActivity.setSTOP_SECONDS(videoURL.getExtras().getIntArray("STOP_SECONDS"));
+            } //인터넷에서 받아올 경우
+
+            videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE, videoPath);
+        }
     }
 
     @Override
@@ -259,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_CANCELED) {
-            Log.d("결과",  "요청 취소");
+            Log.d("결과", "요청 취소");
 
             return;
         }
@@ -278,8 +293,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 getVideo(select);
             }
-        }
-        else {
+        } else {
             Log.d("결과", "취소 ? " + requestCode + " and " + resultCode);
             if (data != null) {
                 Uri uri = data.getData();

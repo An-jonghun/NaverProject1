@@ -93,17 +93,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 }
 
                 intentURL = new Intent(context, MainActivity.class);
-               /* intentURL.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intentURL.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);*/
+                intentURL.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intentURL.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intentURL.putExtra("VIDEO_URL", VIDEO_URL);      // 비디오경로
                 intentURL.putExtra("EXERCISE_NAME", EXERCISE_NAME);     //운동이름
                 intentURL.putExtra("STOP_SECONDS", STOP_SECONDS);       //멈추는 위치(초)
                 v.getContext().startActivity(intentURL);
 
-                /*if (Select_InternetView.activity != null) {
+                /*
+                if (Select_InternetView.activity != null) {
                     Select_InternetView act = Select_InternetView.activity;
                     act.finish();
-                }*/
+                }
+                */
+
             }
         });
     }

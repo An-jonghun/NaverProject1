@@ -19,32 +19,35 @@
             android:layout_height="0dp"
             android:layout_weight="2">
 
-            <ImageButton
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:background="@color/naverLayer"
-                android:src="@drawable/button_video_from_gallery"></ImageButton>
+                android:src="@drawable/button_video_from_gallery"></ImageView>
 
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <Button
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
+                android:layout_centerInParent="true"
                 android:layout_margin="15dp"
                 android:background="@color/naverBackground"
                 android:text="갤러리"
                 android:textColor="@color/naverForeground"
                 android:textSize="15sp"
-                android:textStyle="bold"></Button>
+                android:textStyle="bold">
 
-        </LinearLayout>
+            </TextView>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -67,22 +70,22 @@
             android:layout_height="0dp"
             android:layout_weight="2">
 
-            <ImageButton
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:background="@color/naverLayer"
-                android:src="@drawable/button_video_from_internet"></ImageButton>
+                android:src="@drawable/button_video_from_internet"></ImageView>
 
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <Button
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_margin="15dp"
@@ -90,9 +93,11 @@
                 android:text="인터넷"
                 android:textColor="@color/naverForeground"
                 android:textSize="15sp"
-                android:textStyle="bold"></Button>
+                android:textStyle="bold">
 
-        </LinearLayout>
+            </TextView>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
