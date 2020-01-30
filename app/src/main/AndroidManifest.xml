@@ -18,7 +18,9 @@
         <activity
             android:name=".VideoSetting.Select_InternetView"
             android:screenOrientation="portrait" />
-
+        <activity android:name=".GetVideoFrom"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"/>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">

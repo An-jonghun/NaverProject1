@@ -19,6 +19,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.media.MediaPlayer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -29,6 +30,9 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+
+import com.example.vedioplaytest.R;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -260,7 +264,8 @@ public class Camera2APIs {
                 public void onCaptureCompleted(CameraCaptureSession session,
                                                CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(mContext, "사진촬영 성공", Toast.LENGTH_SHORT).show();
+                    MediaPlayer mediaPlayer = MediaPlayer.create(mContext, R.raw.camera_capture_sound);
+                    mediaPlayer.start();
                     startPreview();
                 }
             };

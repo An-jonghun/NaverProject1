@@ -38,9 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int PERMISSION_CAMERA = 0;
     private static final int PERMISSION_STORAGE_FOR_GALLERY = 2;
     private static final int PERMISSION_STORAGE_FOR_INTERNET = 3;
-
     private static final int SELECT_GET_VIDEO_FROM = 5000;
-
     private static final int SELECT_GALLERY = 1;
     private static final int SELECT_INTERNET = 2;
     public static int GET_VIEOTYPE = 0;
@@ -192,21 +190,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 // TODO: 인터넷에서 영상 받아오는 부분 구조 변경해서 startActivityForResult로 결과 받은 후에 영상 연결하기
-
-//        if (GET_VIEOTYPE != 0) {
-//            controllActivity = new ControllActivity(videoView, cameraAction, getApplicationContext());
-//            if (GET_VIEOTYPE == SELECT_GALLERY) {
-//                controllActivity.setVIDEO_URL(videoPath);
-//            } else if (GET_VIEOTYPE == SELECT_INTERNET) {
-//                Intent videoURL = getIntent();
-//                videoPath = videoURL.getExtras().getString("VIDEO_URL");
-//                controllActivity.setVIDEO_URL(videoURL.getExtras().getString("VIDEO_URL"));
-//                controllActivity.setEXERCISE_NAME(videoURL.getExtras().getString("EXERCISE_NAME"));
-//                controllActivity.setSTOP_SECONDS(videoURL.getExtras().getIntArray("STOP_SECONDS"));
-//            } //인터넷에서 받아올 경우
-//
-//            videoSetPath = new VideoSetPath(videoView, mediaController, GET_VIEOTYPE, videoPath);
-//        }
     }
 
     @Override
@@ -217,7 +200,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         removeCache();
     }
 
@@ -256,24 +238,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (layoutId == R.id.btnStart || layoutId == R.id.btnPause || layoutId == R.id.btnRestart)
                 Toast.makeText(this, "재생 준비가 되지 않았습니다.", Toast.LENGTH_SHORT).show();
         }
-/*
-        if (layoutId == R.id.getCameraImage) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("결과", "캡쳐 스레드 시작");
-                    tempImage = cameraAction.takePicture();
-                    Log.d("결과", "메인 엑티비티 " + tempImage);
-
-                    if (!"Error".equals(tempImage) && !"null".equals(tempImage)) {
-                        String resultJSON = PoseEstimation.estimate(tempImage);
-
-                        Log.d("결과", resultJSON);
-                    }
-                }
-            }).start();
-        }
-*/
     }
 
     private void getVideo(int select) {
@@ -329,4 +293,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
 }
